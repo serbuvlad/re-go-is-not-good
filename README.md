@@ -180,6 +180,7 @@ Just don't mutate it.
 No implicit constructors. Most of the time the zero value will do. When it doesn't `s := NewT()`.
 
 > no pattern matching
+
 > no function/operator overloading
 
 Good. Also means you don't need a symbol table. 100k lines a second compilation go brrrrrr.
@@ -319,9 +320,13 @@ Your call.
 In 2012.
 
 > the worst compiler toolchain ever (2014)
+
 > immature GC (2014)
+
 > immature toolchain (2014)
+
 > not stable
+
 > questionable compiler rigidity (2015)
 
 Toolchain was rewritten in 2015. The one before was odd and based on the Plan 9 compilation system. So quite different to what most people are used to. The new toolchain is much more intuitive for users. It was probably unstable at first, but now you have Go code running in production (see Docker, [go.dev](https://go.dev) examples).
@@ -378,7 +383,6 @@ K.
 
 It uses reflect so this is probably true, but it wouldn't surrprise me if it isn't either. I should check. On the other hand the interface is really really really cool.
 
-Fixed.
 
 > too opinionated
 
