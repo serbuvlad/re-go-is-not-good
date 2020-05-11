@@ -6,37 +6,143 @@ A response to the [go-is-not-good](https://github.com/ksimka/go-is-not-good) rep
 The points
 ----------
 
-> GOPATH is a mess (2014)
+###Good points
 
-Worked well enough for most people, but we use modules now which is much better. GOPATH is basically just a cache now and you need not care about it.
+> unexpected variable shadowing
 
-> `new` and `make` instead of one
+Yeah, this sucks ass.
 
-new creates an object of any type of zero value and returns a pointer to it. make creates slices maps and channels. The type of `new(map[K]T)` is `*map[K]T` and the map itself is nil. The type of `make(map[K]T)` is `map[K]T` and the map actually exists. Different functions that do different things. `new` is also quite rare to see in code as 99% of the time there's a cleaner syntax to obtain that pointer. `s := new(StructT)` is better written as `s := &StructT{}` for consistency with `s := &StructT{ /* fields ; ones not mentioned are zero*/ }`. 
+> no language interoperability (only C)
 
-> panic instead of exceptions
+Fair point.
 
-Panic is not used for error handling. It should only happen on programmer error or in 2 + 2 = 5 state situations. Otherwise you use `error`s. "Don't panic" is a go proverb https://go-proverbs.github.io/
+###Dependency managment/GOPATH/Packages
 
 > bad dependency management
 
-Fixed. See GOPATH.
+> GOPATH is a mess
 
-> bad unicode support
+> import-based vendoring is terrible
 
-No. Made by the UTF-8 creators too.
+> package mechanism is broken
+
+> no versioning model
+
+GOPATH and vendoring worked well enough for most people, but we use modules now which is much better so all these points are obsolete. GOPATH is basically just a cache now and you need not care about it.
+
+> different build approaches
+
+No./Not anymore.
+
+> no unused imports
+
+Use the goimports tool before compiling. It'll clean it up.
+
+> no subpackages
+
+Reminder that C++'s `protected` is an admitted mistake.
+
+> can't import packages relatively
+
+You can but you shouldn't.
+
+
+###Language design
 
 > c-style
 
 Good if you like C.
 
-> can't change hash function in maps
+> stuck in Unix thinking
 
-Patch the compiler or make your own map. The standard library does this for `sync.Map` so it's not like a "one rule for me another for thee" situation.
+Good if you like Unix.
 
-> can't declare/validate implements interface
+> stuck in 70's
 
-> hidden types
+Translation: avoids most of the traps of modern software desing.
+
+> poor design
+
+🤡
+
+> no OOP
+
+Type hierarchies aren't the only way to do OOP. In Go you're working with objects and you compose them far more than in most so-called OOP languages.
+
+> polymorphism is broken
+
+No. It functions quite well.
+
+> upper-case/lower-case scoping is bad
+
+It's expressive. Rip Japanese codebases though.
+
+> designed for stupid people
+
+Designed for fast development. Implementing a hard algorithm is hard in any language. Implementing an easy algorithm, or combining existing ones, should be easy in high level languages.
+
+> no semicolons at line endings
+
+Ha!
+
+> is compiled
+
+Ha!
+
+> concurrency and parallelism are mixed
+
+Mixed as in the same API? This reflects underlying hardware (no GPGPU support :( ). You have specialized constructs in `sync`.
+
+> garbage collector is nothing new; concurrent mark/sweep from the '70s
+
+> goroutine is not original and revolutionary
+
+A reliable way to have good ideas is to be unoriginal. The GC is pretty good though https://blog.twitch.tv/en/2016/07/05/gos-march-to-low-latency-gc-a6fa96f06eb7/
+
+> garbage collector requires implicit (hidden) tradeoffs
+
+Yes.
+
+###Language features
+
+> no virtual functions
+
+No inheritance so what'd be the point?
+
+> inconvenient `range`
+
+`range` is an afterthought and should be treated as syntactic sugar. Don't be afraid to use the C-style `for` for more control.
+
+> `new` and `make` instead of one
+
+new creates an object of any type of zero value and returns a pointer to it. make creates slices maps and channels. The type of `new(map[K]T)` is `*map[K]T` and the map itself is nil. The type of `make(map[K]T)` is `map[K]T` and the map actually exists. Different functions that do different things. `new` is also quite rare to see in code as 99% of the time there's a cleaner syntax to obtain that pointer. `s := new(StructT)` is better written as `s := &StructT{}` for consistency with `s := &StructT{ /* fields ; ones not mentioned are zero*/ }`. 
+
+> hard to extend
+
+It's not meant to be.
+
+> bad unicode support
+
+No. Made by the UTF-8 creators too.
+
+> sort.Interface approach is clumsy
+
+Debatable. I don't mind it.
+
+> defer is abused
+
+Defer is good but you need to learn how to use it so as not to leak. It's not used as often as you think in the wild. (Also we have zero cost defers for most cases now, yay!)
+
+
+> channels are slow
+
+Compared to what and in what use case? You can have hundreds of thousands of goroutines orchestrated with channels on your x86 laptop and still run pretty well. Maybe there are better solutions for certain neiches, like worker pools or whatever, but nothing this generic which scales this well.
+
+> channel API is inconsistent
+
+No.
+
+> can't declare/validate implements interface (hidden types)
 
 Declare, no, and this is a feature. Validate yes.
 
@@ -49,124 +155,58 @@ func TestTisI(t *testing.T) {
 
 But you shouldn't do this.
 
-> can't import packages relatively
+> no sum types
 
-You can but you shouldn't.
+Use interfaces.
 
-> channel API is inconsistent
+> no algebraic data types
 
-No.
+Not built-in, no.
 
-> channels are slow
+> no asserts
 
-Compared to what and in what use case? You can have hundreds of thousands of goroutines orchestrated with channels on your x86 laptop and still run pretty well. Maybe there are better solutions for certain neiches, like worker pools or whatever, but nothing this generic which scales this well.
+Use Testing and runntime checks.
 
-> compilation rules are too confining
+> no macros or templates
 
-No warnings so some things (like unused variables) are errors instead. Jaring at first but a good simplification and you get used to it.
+Good.
 
-> concurrency and parallelism are mixed
+> no immutables
 
-Mixed as in the same API? This reflects underlying hardware (no GPGPU support :( ). You have specialized constructs in `sync`.
+Just don't mutate it.
 
-> confusing and undebuggable
+> no constructors
 
-No.
+No implicit constructors. Most of the time the zero value will do. When it doesn't `s := NewT()`.
 
-> confusing/stupid syntax
+> no pattern matching
+> no function/operator overloading
 
-Confusing? No. Stupid? Your call.
+Good. Also means you don't need a symbol table. 100k lines a second compilation go brrrrrr.
 
-> cumbersome interface
+> no ternary operator
 
-As opposed to what language?
+Translation: no hidden control flow/only one way to do things. Good.
 
-> defer is abused
+> no generics
 
-Defer is good but you need to learn how to use it so as not to leak. It's not used as often as you think in the wild. (Also we have zero cost defers for most cases now, yay!)
+You don't really need them. And they'll be coming soon (TM).
 
-> designed for stupid people
-
-Designed for fast development. Implementing a hard algorithm is hard in any language. Implementing an easy algorithm, or combining existing ones, should be easy in high level languages.
-
-> different build approaches
-
-No./Not anymore.
-
-> difficult to generate code automatically
-
-Maybe. Haven't tried it. There is tooling support though (go:generate and the ast in the standard library).
-
-> error handling
-
-I think it's good.
-
-> garbage collector is nothing new; concurrent mark/sweep from the '70s
-
-> goroutine is not original and revolutionary
-
-A reliable way to have good ideas is to be unoriginal. The GC is pretty good though https://blog.twitch.tv/en/2016/07/05/gos-march-to-low-latency-gc-a6fa96f06eb7/
-
-> garbage collector optimized for pause times at the cost of other desirable gc features
-
-Perhaps. Don't know enough about said trade-offs to comment
-
-> garbage collector requires implicit (hidden) tradeoffs
-
-Yes.
-
-> hard to extend
-
-It's not meant to be.
-
-> hard to test, hard to mock
-
-Hard to test, no. Hard to mock, maybe. Just write the code and let the structure flow. 
+###Pointers
 
 > has pointers
 
-Pointers in Go are basically nil-able references so no arithmetic. Their inclusion has positive (structures containing pointers can be created without a constructor, easy optionals etc.) and negative trade-offs.
-
-> hostile to developer ergonomics
-
-Your call.
-
-> immature GC (2014)
-> immature toolchain (2014)
-
-Not anymore (see the twitch post). The language was 5 years old at the time, give it a break.
-
-> import-based vendoring is terrible
-
-Fixed. See GOPATH.
-
-> inconvenient `range`
-
-`range` is an afterthought. Don't be afraid to use the C-style `for` for more control.
-
-> is compiled
-
-Ha!
-
-> lack of basic data structures
-
-Muh "I can't program without STL". I encourage you to try.
-
-> misleading marketing around garbage collector
-
-\...
-
-> multiple return parameters are overrated
-
-Better than `OUT` paramaters, `errno` or wrapping return types.
-
-> multiple return values have no type checking
-
-False.
-
 > nil as a failure marker
 
-See pointers.
+Pointers in Go are basically nil-able references so no arithmetic. Their inclusion has positive (structures containing pointers can be created without a constructor, easy optionals etc.) and negative trade-offs. In my opinion the positives far outweight the negatives.
+
+> no non-nullable types
+
+Structs, ints, floats 🙂.
+
+> pointers are a mess
+
+No.
 
 > nil interfaces are not entirely nil
 
@@ -200,37 +240,111 @@ func main() {
 
 It prints wtf, like it should. Interfaces are not nil if the wrapped type is nil. That would be ass.
 
-> no OOP
+###STL
 
-Type hierarchies aren't the only way to do OOP. In Go you're working with objects and you compose them far more than in most so-called OOP languages.
+> lack of basic data structures
 
 > no map/reduce/filter
 
-Never needed them.
+Muh "I can't program without STL". I encourage you to try.
+
+> unwieldy to code new collections
+
+Write fewer of them.
+
+> can't change hash function in maps
+
+Patch the compiler or make your own map. The standard library does this for `sync.Map` so it's not like a "one rule for me another for thee" situation.
+
+> no user-type iteration
+
+See `range` (use the clasic `for`)
+
+
+###Errors
+
+> error handling
+
+I think it's good.
+
+> panic instead of exceptions
+
+> no exceptions
+
+Panic is not used for error handling. It should only happen on programmer error or in 2 + 2 = 5 state situations. Otherwise you use `error`s. "Don't panic" is a [go proverb](https://go-proverbs.github.io/). Explicit errors are much better as anyone who has ever seen a `java.lang.NullPointerException` or a stack trace blow up in their face can atest to.
+
+
+###Misc.
+
+> summary: not elegant as Python, not strong as Java
+
+Python aka "who knows what the data types are" the language?
+
+“Porting my code review tools to Go from Python. Surprised to see a reduction in line counts.” – Scott Dunlop
+
+> compilation rules are too confining
+
+No warnings so some things (like unused variables) are errors instead. Jaring at first but a good simplification and you get used to it.
+
+> confusing and undebuggable
+
+No.
+
+> confusing/stupid syntax
+
+Confusing? No. Stupid? Your call.
+
+> cumbersome interface
+
+As opposed to what language?
+
+> difficult to generate code automatically
+
+Maybe. Haven't tried it. There is tooling support though (go:generate and the ast in the standard library).
+
+> garbage collector optimized for pause times at the cost of other desirable gc features
+
+Perhaps. Don't know enough about said trade-offs to comment.
+
+> hard to test, hard to mock
+
+Hard to test, no. Hard to mock, maybe. Just write the code and let the structure flow. 
+
+> hostile to developer ergonomics
+
+Your call.
+
+> too young
+
+In 2012.
+
+> the worst compiler toolchain ever (2014)
+> immature GC (2014)
+> immature toolchain (2014)
+> not stable
+> questionable compiler rigidity (2015)
+
+Toolchain was rewritten in 2015. The one before was odd and based on the Plan 9 compilation system. So quite different to what most people are used to. The new toolchain is much more intuitive for users. It was probably unstable at first, but now you have Go code running in production (see Docker, [go.dev](https://go.dev) examples).
+
+> misleading marketing around garbage collector
+
+\...
+
+> multiple return parameters are overrated
+
+Better than `OUT` paramaters, `errno` or wrapping return types.
+
+> multiple return values have no type checking
+
+False.
 
 > no `this`
 
 No implicit `this`.
 
-> no algebraic data types
-
-Not built-in, no.
-
-> no asserts
-
-Use Testing and runntime checks.
-
-> no constructors
-
-No implicit constructors. Most of the time the zero value will do. When it doesn't `s := NewT()`.
-
 > no decent IDE
 
 GoLand, VSC, editor+shell
-
-> no exceptions
-
-See panic().
 
 > no first-class support of interfaces
 
@@ -240,97 +354,17 @@ What? Yes there is.
 
 Expressions have multiple values and structures are named tuples so who cares?
 
-> no function/operator overloading
-
-Good. Also means you don't need a symbol table. 100k lines a second compilation go brrrrrr.
-
-> no generics
-
-You don't really need them. And they'll be coming soon (TM).
-
-> no immutables
-
-Just don't mutate it.
-
-> no language interoperability (only C)
-
-Fair point.
-
-> no macros or templates
-
-Good.
-
-> no non-nullable types
-
-Structs, ints, floats 🙂 . Also, see pointers.
-
-> no pattern matching
-
-See overloading.
-
-> no subpackages
-
-Reminder that C++'s `protected` is an admitted mistake.
-
 > no sugar for slices
 
 There is some.
-
-> no sum types
-
-Use interfaces.
-
-> no semicolons at line endings
-
-Ha!
-
-> no ternary operator
-
-Translation: no hidden control flow/only one way to do things. Good.
-
-> no unused imports
-
-Use the goimports tool before compiling. It'll clean it up.
-
-> no user-type iteration
-
-See `range` (use the clasic `for`)
-
-> no versioning model
-
-Fixed.
-
-> no virtual functions
-
-No inheritance so what'd be the point?
-
-> not stable
-
-I'm not having issues with it. Docker is written in Go and that runs in production a lot.
 
 > not-so-obvious slices behaviour
 
 Depends what you're used to. You learn it.
 
-> package mechanism is broken (2015)
-
-Fixed.
-
-> pointers are a mess
-
-See pointers.
-
-> polymorphism is broken
-
-No. It functions quite well.
-
-> poor design
-
-🤡
-
 > poor std math lib
 
-Maybe. I don't have extraordinary math needs, but maybe it's a fair point.
+Maybe. I don't have extraordinary math needs, but maybe it's a fair point, who knows?
 
 > project layout is bad
 
@@ -340,33 +374,9 @@ Your call.
 
 K.
 
-> questionable compiler rigidity (2015)
-
-Is quite stable. The language switched from C to self-hosted that year so maybe it was new and not very stable at the time, idk.
-
 > slow json parsing
 
-It uses reflect so this is probably true. On the other hand the interface is really really really cool.
-
-> sort.Interface approach is clumsy
-
-Debatable. I don't mind it.
-
-> stuck in 70's
-
-Good. Everything since is shit. \s
-
-> stuck in Unix thinking
-
-Good if you like Unix.
-
-> summary: not elegant as Python, not strong as Java
-
-Python aka "who knows what the data types are" the language?
-
-“Porting my code review tools to Go from Python. Surprised to see a reduction in line counts.” – Scott Dunlop
-
-> the worst compiler toolchain ever (2014)
+It uses reflect so this is probably true, but it wouldn't surrprise me if it isn't either. I should check. On the other hand the interface is really really really cool.
 
 Fixed.
 
@@ -382,10 +392,6 @@ Good.
 
 Not in practice.
 
-> too young
-
-In 2012.
-
 > type inference is too simple
 
 Good.
@@ -393,18 +399,6 @@ Good.
 > un-googlable name
 
 "Golang".
-
-> unexpected variable shadowing
-
-***Finally a good point***. Yeah, this sucks ass.
-
-> unwieldy to code new collections
-
-See programming without STL.
-
-> upper-case/lower-case scoping is bad
-
-It's expressive. Rip Japanese codebases though.
 
 > weird mascot (gopher)
 
