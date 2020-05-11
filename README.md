@@ -262,7 +262,7 @@ Good.
 
 > no non-nullable types
 
-Structs, ints, floats :slight_smile: . Also, see pointers.
+Structs, ints, floats 🙂 . Also, see pointers.
 
 > no pattern matching
 
