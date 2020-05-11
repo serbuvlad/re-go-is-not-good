@@ -136,7 +136,7 @@ Defer is good but you need to learn how to use it so as not to leak. It's not us
 
 > channels are slow
 
-Compared to what and in what use case? You can have hundreds of thousands of goroutines orchestrated with channels on your x86 laptop and still run pretty well. Maybe there are better solutions for certain neiches, like worker pools or whatever, but nothing this generic which scales this well.
+Compared to what and in what use case? You can have tens of thousands of goroutines orchestrated with channels on your x86 laptop and still run pretty well. Maybe there are better solutions for certain neiches, like worker pools or whatever, but nothing this generic which scales this well.
 
 > channel API is inconsistent
 
