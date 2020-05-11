@@ -6,7 +6,7 @@ A response to the [go-is-not-good](https://github.com/ksimka/go-is-not-good) rep
 The points
 ----------
 
-###Good points
+### Good points
 
 > unexpected variable shadowing
 
@@ -16,7 +16,7 @@ Yeah, this sucks ass.
 
 Fair point.
 
-###Dependency managment/GOPATH/Packages
+### Dependency managment/GOPATH/Packages
 
 > bad dependency management
 
@@ -47,7 +47,7 @@ Reminder that C++'s `protected` is an admitted mistake.
 You can but you shouldn't.
 
 
-###Language design
+### Language design
 
 > c-style
 
@@ -103,7 +103,7 @@ A reliable way to have good ideas is to be unoriginal. The GC is pretty good tho
 
 Yes.
 
-###Language features
+### Language features
 
 > no virtual functions
 
@@ -192,7 +192,7 @@ Translation: no hidden control flow/only one way to do things. Good.
 
 You don't really need them. And they'll be coming soon (TM).
 
-###Pointers
+### Pointers
 
 > has pointers
 
@@ -240,7 +240,7 @@ func main() {
 
 It prints wtf, like it should. Interfaces are not nil if the wrapped type is nil. That would be ass.
 
-###STL
+### STL
 
 > lack of basic data structures
 
@@ -261,7 +261,7 @@ Patch the compiler or make your own map. The standard library does this for `syn
 See `range` (use the clasic `for`)
 
 
-###Errors
+### Errors
 
 > error handling
 
@@ -274,7 +274,7 @@ I think it's good.
 Panic is not used for error handling. It should only happen on programmer error or in 2 + 2 = 5 state situations. Otherwise you use `error`s. "Don't panic" is a [go proverb](https://go-proverbs.github.io/). Explicit errors are much better as anyone who has ever seen a `java.lang.NullPointerException` or a stack trace blow up in their face can atest to.
 
 
-###Misc.
+### Misc.
 
 > summary: not elegant as Python, not strong as Java
 
